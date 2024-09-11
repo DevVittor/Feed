@@ -1,0 +1,11 @@
+####
+
+POST http://localhost:3000/api/v1/proposal?postId=66e1da66829b7e20d146cb4e&userId=66e1de2fc74d7457cb794377
+Content-Type: application/json
+
+{
+  "proposal":"Eu quero apenas fazer uma proposta bem simples para você.",
+  "price":90,
+  "term":15,
+  "contact":"(21) 998541-107"
+}

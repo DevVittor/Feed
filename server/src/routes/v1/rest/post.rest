@@ -1,0 +1,16 @@
+####
+
+POST http://localhost:3000/api/v1/post?userId=66e1d9bcdc376cbf8cd2fd95
+Content-Type: application/json
+
+{
+  "title":"Apenas um simples post",
+  "details":"Eu vou detalhar melhor mais tarde",
+  "price": {
+    "min": 300,
+    "max": 500
+  },
+  "level": "any",
+  "skills": ["Ux/Ui","JavaScript","Node.js","Express.js"],
+  "category": "Web"
+}
