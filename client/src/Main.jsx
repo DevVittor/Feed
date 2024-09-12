@@ -1,4 +1,5 @@
 import { StrictMode } from "react";
+import { SnackbarProvider } from "notistack";
 import { createRoot } from "react-dom/client";
 import { Nav } from "./components/Nav.jsx";
 import { Home } from "./pages/Home.jsx";
@@ -27,7 +28,9 @@ export function Main() {
 }
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Main />
-  </StrictMode>
+  <SnackbarProvider autoHideDuration={5000}>
+    <StrictMode>
+      <Main />
+    </StrictMode>
+  </SnackbarProvider>
 );
