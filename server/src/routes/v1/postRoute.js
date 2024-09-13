@@ -1,8 +1,17 @@
 import { Router } from "express";
 const router = Router();
 
-import { createPost } from "../../functions/Post.js";
+import {
+  createPost,
+  deletePost,
+  listPost,
+  detailsPost,
+} from "../../functions/Post.js";
+import { validationToken } from "../../utils/validationToken.js";
 
-router.post("/", createPost);
+router.get("/list", listPost);
+router.get("/details", detailsPost);
+router.post("/", validationToken, createPost);
+router.delete("/delete", deletePost);
 
 export default router;

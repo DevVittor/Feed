@@ -8,7 +8,6 @@ export function Register() {
   const { enqueueSnackbar } = useSnackbar(); // Hook para mostrar notificações
   const navigate = useNavigate(); // Hook para navegação
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -24,19 +23,6 @@ export function Register() {
     event.preventDefault();
 
     // Validação do username
-    if (formData.username.length <= 5 || formData.username.length > 12) {
-      if (formData.username.length <= 5) {
-        enqueueSnackbar(
-          "O nome está curto demais, ele tem que ter mais de 5 caracteres",
-          { variant: "error" }
-        );
-      } else if (formData.username.length > 12) {
-        enqueueSnackbar("Seu username tem mais que 12 caracteres", {
-          variant: "error",
-        });
-      }
-      return; // Evita a continuação do processo
-    }
 
     // Validação da senha
     if (formData.password.length <= 5 || formData.password.length > 16) {
@@ -66,9 +52,7 @@ export function Register() {
       }
       localStorage.removeItem("Token");
       localStorage.setItem("Token", token);
-      setTimeout(() => {
-        navigate("/"); // Redireciona para a página Home
-      }, 3000);
+      navigate("/");
     } catch (error) {
       // Verifica se error.response está definido
       const axiosError = error.response
@@ -92,18 +76,6 @@ export function Register() {
           className="flex flex-col gap-2 p-3 rounded-sm shadow-sm border border-zinc-800"
           onSubmit={handleData}
         >
-          <label className="flex flex-col gap-1" htmlFor="">
-            Username:
-            <input
-              className="px-3 py-1 rounded-md bg-zinc-700 text-zinc-100 font-medium outline-none border-none"
-              type="text"
-              name="username"
-              value={formData.username}
-              placeholder="Username"
-              onChange={changeData}
-            />
-          </label>
-
           <label className="flex flex-col gap-1" htmlFor="">
             Email:
             <input

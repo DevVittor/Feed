@@ -1,0 +1,11 @@
+####
+
+POST http://localhost:3000/api/v1/freela?userId=66e2f8ecee86fd3424af168f
+Content-Type: application/json
+
+{
+  "name":"Vittor",
+  "lastname":"Serra",
+  "skills":["JavaScript","Node.js","Ux/Ui"],
+  "about":"Apenas um pouco da vida de um freelancer que trabalhar demais"
+}

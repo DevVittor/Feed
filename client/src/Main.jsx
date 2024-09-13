@@ -10,6 +10,7 @@ import { About } from "./pages/About.jsx";
 import { PageFound } from "./pages/PageFound.jsx";
 import Details from "./pages/Details.jsx";
 import { Register } from "./pages/Register.jsx";
+import { Post } from "./pages/Post.jsx";
 
 export function Main() {
   return (
@@ -20,6 +21,7 @@ export function Main() {
           <Route path="/post/:postId" element={<Details />} />
           <Route path="/about" element={<About />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/post" element={<Post />} />
           <Route path="*" element={<PageFound />} />
         </Route>
       </Routes>

@@ -5,7 +5,26 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { ListCategory } from "../components/ListCategory";
 import { SearchPost } from "../components/SearchPost";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 export function Home() {
+  const [post, setPost] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get(
+        "http://localhost:3000/api/v1/post/list"
+      );
+
+      console.log(response.data.list);
+      setPost(response.data.list);
+    };
+
+    fetchData().catch((error) => {
+      console.error(error);
+    });
+  }, []);
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -21,13 +40,16 @@ export function Home() {
         </div>
         <div className="flex justify-center items-center flex-col gap-2 md:order-2 order-1 md:w-auto w-full">
           <SearchPost />
-          {Array.from({ length: 40 }).map((_, index) => (
-            <Link to={`/post/${index}`} key={index}>
+          {post.map((item) => (
+            <Link to={`/post/${item._id}`} key={item._id}>
               <CardPost
-                title="Preciso de um Ecommerce de Roupas feito com Wordpress"
-                skills={["Developer", "Ux/Ui", "Photoshop", "SEO", "Mobile"]}
-                description="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa similique iste ipsum recusandae sequi ea, molestias non ducimus in necessitatibus obcaecati doloribus quasi praesentium aliquam omnis quae minus facilis dignissimos, aperiam nulla, vitae autem blanditiis. Dolorem, inventore dolore commodi facere aliquam consectetur soluta, vel nam voluptas maxime asperiores nesciunt maiores!"
-                photo="https://images.pexels.com/photos/19278092/pexels-photo-19278092/free-photo-of-neve-panorama-vista-paisagem.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                title={item.title}
+                skills={item.skills}
+                details={item.details}
+                min={item.price.min}
+                max={item.price.max}
+                level={item.level}
+                category={item.category}
               />
             </Link>
           ))}

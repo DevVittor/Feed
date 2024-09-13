@@ -8,9 +8,9 @@ import bcrypt from "bcrypt";
 const secret = process.env.JWT_SECRET;
 
 export const registerNewUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !email || !password) {
+  if (!email || !password) {
     return res.status(404).json({
       error: "É preciso ter todos os campos do formulário preenchido",
     });
@@ -27,7 +27,6 @@ export const registerNewUser = async (req, res) => {
     const generationPasswordHash = await bcrypt.hash(password, 10);
 
     const user = await userModel.create({
-      username,
       email,
       password: generationPasswordHash,
     });

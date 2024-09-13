@@ -1,9 +1,19 @@
 ####
 
-POST http://localhost:3000/api/v1/post?userId=66e1d9bcdc376cbf8cd2fd95
+GET http://localhost:3000/api/v1/post/list
+
+####
+
+GET http://localhost:3000/api/v1/post/details?postId=66e34f42533a856ed605c89f
+
+####
+
+POST http://localhost:3000/api/v1/post?userId=66e2f8ecee86fd3424af168f
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmUyZjJiNjZhMWVlZWNjMzQ4ZTVhYmEiLCJlbWFpbCI6IjJAZ21haWwuY29tIiwiaWF0IjoxNzI2MTQ5MzAzLCJleHAiOjE3MjY3NTQxMDN9.4YyAH-LDYK4U3qjesx4D6AIK8Kt5FxDNw1Oxgf47V0I
 
 {
+  "author":"Vittor Serra",
   "title":"Apenas um simples post",
   "details":"Eu vou detalhar melhor mais tarde",
   "price": {
@@ -13,4 +23,14 @@ Content-Type: application/json
   "level": "any",
   "skills": ["Ux/Ui","JavaScript","Node.js","Express.js"],
   "category": "Web"
+}
+
+####
+
+DELETE http://localhost:3000/api/v1/post/delete
+Content-Type: application/json
+
+{
+  "postId":"66e2e8c6053fc2503c0e67e9",
+  "userId":"66e24d63a3d1f78212b65321"
 }

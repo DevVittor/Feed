@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 
 import router from "../routes/v1/index.js";
-import { adminRegistered } from "../utils/CreateAdmin.js";
+import { adminRegistered } from "../utils/createAdmin.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -1,0 +1,5 @@
+####
+
+GET http://localhost:3000/api/v1/token/validation/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmUxZmVkNGQ5ZTMzNjMwYzFmOWVjNGYiLCJlbWFpbCI6IjFAZ21haWwuY29tIiwiaWF0IjoxNzI2MTQzNTM2LCJleHAiOjE3MjYxNDM1NjZ9.dijNTYar-b9VSo1b62NfPBhwlRUnzJV1bni6OFeQwSg
+Host: localhost:3000
