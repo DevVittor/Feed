@@ -2,7 +2,8 @@ import { IoIosSearch } from "react-icons/io";
 import { ListCategory } from "./ListCategory";
 import { useState } from "react";
 import { TbCategoryFilled } from "react-icons/tb";
-export function SearchPost() {
+import PropTypes from "prop-types";
+export function SearchPost({ searchPost, setSearch }) {
   const [modalCagegory, setModalCategory] = useState(false);
 
   function activeModal() {
@@ -32,14 +33,19 @@ export function SearchPost() {
       <input
         className="h-[40px] px-3 text-lg font-medium bg-zinc-800 text-zinc-100 w-full md:rounded-l-md rounded-none outline-none"
         type="text"
+        onChange={(e) => setSearch(e.target.value)}
         placeholder="Search Post"
       />
       <button
         className="h-[40px] px-4 bg-zinc-700 text-zinc-100 text-lg rounded-r-md flex items-center justify-center"
-        type="submit"
+        onClick={searchPost}
       >
         <IoIosSearch />
       </button>
     </div>
   );
 }
+SearchPost.propTypes = {
+  searchPost: PropTypes.func.isRequired,
+  setSearch: PropTypes.func.isRequired,
+};

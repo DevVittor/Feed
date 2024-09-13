@@ -9,6 +9,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 export function Home() {
   const [post, setPost] = useState([]);
+  const [search, setSearch] = useState("");
+
+  console.log(search);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,13 +28,21 @@ export function Home() {
     });
   }, []);
 
+  const searchPost = async () => {
+    const response = await axios.get(
+      `http://localhost:3000/api/v1/post/search?search=${search}`
+    );
+    console.log(response.data);
+    setPost(response.data.result);
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
         <title>Home</title>
         <meta name="description" content="Page Home" />
       </Helmet>
-      <div className="min-h-screen flex justify-center items-start flex-wrap gap-5 md:py-5 p-2">
+      <div className="min-h-screen flex justify-center items-start flex-wrap md:gap-5 gap-2 md:py-5 p-2">
         <div className="flex flex-col gap-5 md:w-[350px] w-full md:order-1 order-2">
           <EditProfile />
           <div className="md:block hidden">
@@ -39,9 +50,13 @@ export function Home() {
           </div>
         </div>
         <div className="flex justify-center items-center flex-col gap-2 md:order-2 order-1 md:w-auto w-full">
-          <SearchPost />
+          <SearchPost searchPost={searchPost} setSearch={setSearch} />
           {post.map((item) => (
-            <Link to={`/post/${item._id}`} key={item._id}>
+            <Link
+              className="md:w-auto w-full"
+              to={`/post/${item._id}`}
+              key={item._id}
+            >
               <CardPost
                 title={item.title}
                 skills={item.skills}

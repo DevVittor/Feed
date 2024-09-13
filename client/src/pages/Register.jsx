@@ -52,7 +52,9 @@ export function Register() {
       }
       localStorage.removeItem("Token");
       localStorage.setItem("Token", token);
-      navigate("/");
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 3000);
     } catch (error) {
       // Verifica se error.response está definido
       const axiosError = error.response

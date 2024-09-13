@@ -1,5 +1,108 @@
 import userModel from "../models/userModel.js";
 import postModel from "../models/postModel.js";
+import { body, validationResult } from "express-validator";
+
+export const searchPost = async (req, res) => {
+  const { search } = req.query;
+
+  try {
+    const post = await postModel.findOne({
+      title: { $regex: search, $options: "i" },
+      blocked: false,
+    });
+
+    if (posts.length === 0) {
+      return res.status(404).json({ error: "Não encontrei esse post" });
+    }
+
+    res.status(200).json({ result: post });
+  } catch (error) {
+    res.status(500).json({
+      error: "Não foi possível buscar o post no momento",
+      details: error.message,
+    });
+  }
+};
+
+export const unlockPost = async (req, res) => {
+  const { userId } = req.query;
+  if (!userId) {
+    return res
+      .status(404)
+      .json({ error: "Não foi possível identificar o usuário" });
+  }
+  const { postId, reason } = req.body;
+  if (!postId) {
+    return res.status(404).json({ error: "Não foi possível localizar o post" });
+  }
+  if (!reason) {
+    return res
+      .status(404)
+      .json({ error: "É necessário ter um motivo pelo desbloqueio" });
+  }
+  //reason -> Motivo
+  const user = await userModel.findById(userId);
+  if (!user || user.role !== "admin") {
+    return res
+      .status(409)
+      .json({ error: "Não foi possível desbloquear o post" });
+  }
+  const post = await postModel.findById(postId);
+  if (!post || post.blocked === false) {
+    res
+      .status(409)
+      .json({ error: "Não foi possíve localizar e desbloquear o post" });
+  }
+
+  await postModel.findByIdAndUpdate(postId, { $set: { blocked: false } });
+  res
+    .status(200)
+    .json({ msg: "O post: ${post.title} foi desbloqueado.", reason });
+};
+
+export const blockPost = async (req, res) => {
+  const { userId } = req.query;
+  if (!userId) {
+    return res
+      .status(404)
+      .json({ error: "Não foi possível identificar o usuário" });
+  }
+
+  const { postId, reason } = req.body;
+  //reason -> Motivo
+  if (!postId) {
+    return res.status(404).json({ error: "Não foi possível localizar o post" });
+  }
+
+  try {
+    const user = await userModel.findById(userId);
+
+    if (!user || user.role !== "admin") {
+      return res
+        .status(409)
+        .json({ error: "Você não tem permissão para bloquear o post" });
+    }
+
+    const post = await postModel.findById(postId);
+
+    if (!post || post.blocked === true) {
+      return res
+        .status(409)
+        .json({ error: "Não foi possível bloquear o post" });
+    }
+
+    await postModel.findById(postId, { $set: { blocked: true } });
+
+    res
+      .status(200)
+      .json({ msg: "O post sobre: ${post.title} foi bloqueado.", reason });
+  } catch (error) {
+    res.status(500).json({
+      error: "Não foi possível bloquear o post no momento.",
+      details: error.message,
+    });
+  }
+};
 
 export const listPost = async (req, res) => {
   try {
@@ -120,6 +223,87 @@ export const createPost = async (req, res) => {
       .json({ error: "Não foi possível criar o post", details: error.message });
   }
 };
+
+export const alterPost = [
+  (req, res, next) => {
+    const validadeInput = [
+      body("postId")
+        .notEmpty()
+        .isString()
+        .withMessage("É necessário ter o identificador do post"),
+      body("title")
+        .optional()
+        .isString()
+        .withMessage("O titulo deve ser do tipo String"),
+      body("details")
+        .optional()
+        .isString()
+        .withMessage("Os detalhes devem ser do tipo String"),
+    ];
+    validadeInput.forEach((validation) => validation.run(req));
+    next();
+  },
+  async (req, res) => {
+    // Checa se há erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { userId } = req.query;
+    if (!userId) {
+      return res
+        .status(404)
+        .json({ error: "Não foi possível identificar o usuário" });
+    }
+    const { postId, title, details } = req.body;
+    if (!postId) {
+      return res
+        .status(404)
+        .json({ error: "É necessário ter o identificador do post" });
+    }
+
+    try {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: "Não foi possíve localizar o usuário" });
+      }
+
+      const post = await postModel.findById(postId);
+      if (!post) {
+        return res.status(404).json({ error: "Esse post não foi localizado" });
+      }
+      const authorPost = await postModel.findOne({
+        _id: postId,
+        userId: userId,
+      });
+
+      if (!authorPost) {
+        return res
+          .status(409)
+          .json({ error: "Você não tem permissão para alterar o post" });
+      }
+
+      const updateFields = {};
+
+      if (title && title !== post.title) updateFields.title = title;
+      if (details && details !== post.details) updateFields.details = details;
+      if (Object.keys(updateFields).length > 0) {
+        // Atualiza o post apenas se houver campos para atualizar
+        await postModel.findByIdAndUpdate(postId, { $set: updateFields });
+        res.status(200).json({ msg: "Atualização foi feita" });
+      } else {
+        res.status(200).json({ msg: "Não foi enviado nenhum alteração" });
+      }
+    } catch (error) {
+      res.status(500).json({
+        error: "Não foi possível receber as informações para alterar o post",
+        details: error.message,
+      });
+    }
+  },
+];
 
 export const deletePost = async (req, res) => {
   const { postId, userId } = req.body;
