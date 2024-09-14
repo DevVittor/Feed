@@ -75,3 +75,33 @@ export const registerFreela = async (req, res) => {
     });
   }
 };
+
+export const removeProfileFreela = async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res
+      .status(404)
+      .json({ error: "Não foi possível identificar o usuário" });
+  }
+
+  const freela = await freelaModel.findOne({ userId });
+  if (!freela) {
+    return res
+      .status(400)
+      .json({ error: "Não foi possíve localizar esse perfil de freelancer" });
+  }
+
+  await freelaModel.findByIdAndDelete(freela._id);
+
+  //Remover cargo de freelancer e remover a quantidade de proposal
+  await userModel.findByIdAndUpdate(
+    userId,
+    { $set: { role: "user" }, $unset: { proposals: "" } },
+    { new: true }
+  );
+
+  const proposal = await proposalModel.findOne({
+    userId,
+  });
+};
